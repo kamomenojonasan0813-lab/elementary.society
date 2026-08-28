@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>授業デモ｜自動車デジタルミュージアム ワークシートシステム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ── tokens ── */
+:root{
+  --navy:#12213E; --navy2:#1B2F52; --navy3:#25406B;
+  --paper:#F5F3EC; --white:#FFFFFF;
+  --amber:#E2992F; --amber2:#F7E3BC;
+  --steel:#5A6673; --steelL:#C7CDD3;
+  --stamp:#B8422F;
+  --ok:#2F7D5B;
+  --ink:#161B22; --ink2:#3B4450;
+  --line:#DDD9CE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--white);color:var(--ink);
+  font-family:"Noto Sans JP",sans-serif;font-size:15px;line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.disp{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;letter-spacing:.01em}
+.mono{font-family:"Roboto Mono",monospace;letter-spacing:.05em}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+/* ── site header ── */
+.siteheader{
+  background:var(--navy);color:var(--paper);
+  border-bottom:3px solid var(--amber);padding:14px 24px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.logo{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;font-size:18px}
+.logo small{display:block;font-size:11px;font-weight:500;color:var(--steelL);letter-spacing:.06em}
+.badge{
+  margin-left:auto;font-family:"Roboto Mono",monospace;font-size:11px;letter-spacing:.12em;
+  border:1.5px solid var(--amber);color:var(--amber);border-radius:3px;padding:4px 11px;
+  text-transform:uppercase;
+}
+
+/* ── hero ── */
+.hero{
+  background:linear-gradient(160deg,var(--navy) 0%,var(--navy2) 60%,var(--navy3) 100%);
+  color:var(--paper);padding:72px 24px 64px;text-align:center;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 48px),
+              repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 48px);
+  pointer-events:none;
+}
+.hero-inner{position:relative;max-width:760px;margin:0 auto}
+.hero-eyebrow{
+  display:inline-block;font-family:"Roboto Mono",monospace;font-size:11px;letter-spacing:.2em;
+  color:var(--amber);border:1.5px solid var(--amber);border-radius:3px;padding:4px 12px;
+  text-transform:uppercase;margin-bottom:22px;
+}
+.hero h1{font-size:clamp(26px,4.5vw,46px);line-height:1.35;margin-bottom:16px;color:#fff}
+.hero h1 em{color:var(--amber);font-style:normal}
+.hero-sub{font-size:15.5px;color:var(--steelL);max-width:560px;margin:0 auto 40px;line-height:1.9}
+.hero-chips{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:48px}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:8px 18px;font-size:13px;
+}
+.chip .dot{width:7px;height:7px;border-radius:50%}
+.chip .dot.s{background:#4CAF83}
+.chip .dot.t{background:var(--amber)}
+.scroll-cue{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-family:"Roboto Mono",monospace;font-size:11px;color:var(--steelL);letter-spacing:.14em;
+  animation:bob 2s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.scroll-cue svg{opacity:.6}
+
+/* ── 授業タイムライン ── */
+.timeline-section{background:var(--navy);padding:40px 24px 0;border-bottom:3px solid var(--amber)}
+.tl-inner{max-width:1100px;margin:0 auto}
+.tl-label{
+  display:flex;align-items:center;gap:10px;color:var(--steelL);margin-bottom:22px;
+  font-family:"Roboto Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+}
+.tl-label::before,.tl-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
+.steps{display:flex;gap:0}
+.step{
+  flex:1;cursor:pointer;padding:12px 10px 0;border-bottom:4px solid transparent;
+  transition:border-color .2s;text-align:center;min-width:0;
+}
+.step:hover{border-color:rgba(226,153,47,.4)}
+.step.on{border-color:var(--amber)}
+.step-no{
+  font-family:"Roboto Mono",monospace;font-size:10px;color:var(--steelL);display:block;margin-bottom:4px
+}
+.step-name{
+  font-size:12px;font-weight:700;color:var(--paper);font-family:"Zen Kaku Gothic New",sans-serif;
+  line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.step.on .step-name{color:var(--amber)}
+.step-who{
+  display:flex;justify-content:center;gap:4px;margin-top:8px;padding-bottom:10px;
+}
+.who-dot{width:8px;height:8px;border-radius:50%;opacity:.4}
+.who-dot.s{background:#4CAF83}
+.who-dot.t{background:var(--amber)}
+.who-dot.on{opacity:1}
+
+/* ── デモセクション ── */
+.demo-wrap{
+  max-width:1200px;margin:0 auto;padding:48px 24px;display:grid;
+  grid-template-columns:1fr 1fr;gap:28px;align-items:start;
+}
+@media(max-width:900px){.demo-wrap{grid-template-columns:1fr;padding:24px 16px}}
+.panel{background:var(--paper);border-radius:12px;overflow:hidden;border:1.5px solid var(--line)}
+.panel-head{
+  background:var(--navy);color:var(--paper);padding:14px 18px;
+  display:flex;align-items:center;gap:12px;
+}
+.panel-role{
+  font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  border:1.5px solid currentColor;border-radius:3px;padding:3px 9px;flex:0 0 auto;
+}
+.panel-role.s{color:#4CAF83;border-color:#4CAF83}
+.panel-role.t{color:var(--amber);border-color:var(--amber)}
+.panel-title{font-size:14px;font-weight:700;font-family:"Zen Kaku Gothic New",sans-serif}
+.panel-sub{margin-left:auto;font-size:11px;color:var(--steelL);font-family:"Roboto Mono",monospace}
+.panel-body{padding:20px;min-height:440px}
+.desc{
+  font-size:13px;color:var(--ink2);line-height:1.85;margin-bottom:16px;padding:12px 14px;
+  background:var(--amber2);border-left:4px solid var(--amber);border-radius:0 6px 6px 0;
+}
+.desc b{display:block;font-family:"Zen Kaku Gothic New",sans-serif;font-size:13.5px;color:var(--navy);margin-bottom:3px}
+
+/* ── モックUI ── */
+.mockbar{
+  background:var(--navy);border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:10px;
+  margin-bottom:12px;
+}
+.mockbar-dots{display:flex;gap:5px}
+.mockbar-dots span{width:10px;height:10px;border-radius:50%}
+.mockbar-dots .r{background:#FF5F57}
+.mockbar-dots .y{background:#FFBD2E}
+.mockbar-dots .g{background:#28CA41}
+.mockbar-url{
+  flex:1;background:rgba(255,255,255,.1);border-radius:5px;padding:5px 10px;
+  font-family:"Roboto Mono",monospace;font-size:10.5px;color:var(--steelL);text-align:center;
+}
+.mockscreen{border-radius:8px;overflow:hidden;border:1.5px solid var(--line)}
+
+/* 児童モック */
+.s-bar{background:var(--navy);border-bottom:2px solid var(--amber);padding:9px 14px;display:flex;align-items:center;gap:10px}
+.s-brand{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:13px;color:var(--paper)}
+.s-name{margin-left:auto;font-size:11px;color:var(--steelL)}
+.s-save{font-family:"Roboto Mono",monospace;font-size:10px;color:var(--ok);background:rgba(47,125,91,.15);border:1px solid var(--ok);border-radius:99px;padding:3px 10px}
+.s-body{display:grid;grid-template-columns:170px 1fr;background:var(--paper)}
+.s-rail{padding:10px 8px;border-right:1px solid var(--line);background:var(--paper)}
+.s-rail-ttl{font-size:9px;color:var(--steel);margin:0 3px 5px;font-family:"Roboto Mono",monospace;letter-spacing:.1em}
+.s-tag{
+  display:flex;align-items:center;gap:7px;background:var(--white);border:1px solid var(--line);
+  border-left:4px solid var(--steelL);border-radius:5px;padding:6px 8px;margin-bottom:4px;cursor:default;
+}
+.s-tag.active{background:var(--navy);border-color:var(--navy);border-left-color:var(--amber)}
+.s-tag.done{border-left-color:var(--amber)}
+.s-tag-no{
+  width:20px;height:20px;border-radius:50%;border:1.5px solid var(--steelL);
+  display:grid;place-items:center;font-family:"Roboto Mono",monospace;font-size:9px;color:var(--steel);flex:0 0 auto;
+}
+.s-tag.active .s-tag-no{background:var(--navy3);border-color:var(--amber);color:#fff}
+.s-tag.done .s-tag-no{background:var(--amber);border-color:var(--amber);color:var(--navy)}
+.s-tag-n{font-size:11px;font-weight:700;color:var(--navy);font-family:"Zen Kaku Gothic New",sans-serif;line-height:1.3}
+.s-tag.active .s-tag-n{color:var(--paper)}
+.s-tag-q{font-size:9px;color:var(--steel);line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ring-sm{flex:0 0 auto;width:18px;height:18px}
+.ring-sm circle{fill:none;stroke-width:3.5}
+.ring-sm .rbg{stroke:var(--line)}
+.ring-sm .rfg{stroke:var(--amber);stroke-linecap:round}
+.s-sheet{background:var(--white);padding:14px}
+.s-eyebrow{font-family:"Roboto Mono",monospace;font-size:9px;color:var(--stamp);border:1px solid var(--stamp);border-radius:2px;padding:2px 6px;display:inline-block;margin-bottom:7px}
+.s-sheet-title{font-size:17px;font-weight:900;color:var(--navy);font-family:"Zen Kaku Gothic New",sans-serif;margin-bottom:3px}
+.s-sheet-sub{font-size:10px;color:var(--steel);margin-bottom:12px}
+.s-note{background:var(--paper);border:1px dashed var(--line);border-radius:6px;padding:10px;font-size:10.5px;color:var(--ink2);margin-bottom:10px;line-height:1.7}
+.s-note b{display:block;color:var(--navy);font-family:"Zen Kaku Gothic New",sans-serif;margin-bottom:2px}
+.s-flabel{font-size:11px;font-weight:700;color:var(--navy);font-family:"Zen Kaku Gothic New",sans-serif;margin-bottom:4px}
+.s-field{background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:8px 10px;font-size:11px;min-height:52px;color:var(--ink2)}
+.s-stamp{
+  display:inline-block;color:var(--stamp);border:2px solid var(--stamp);border-radius:4px;
+  padding:3px 8px;font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;font-size:11px;
+  transform:rotate(-8deg);margin-left:auto;
+}
+
+/* 教員モック */
+.t-bar{background:var(--navy);border-bottom:2px solid var(--amber);padding:9px 14px;display:flex;align-items:center;gap:10px}
+.t-brand{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:13px;color:var(--paper)}
+.t-sub{font-size:10px;color:var(--steelL)}
+.t-chip{font-family:"Roboto Mono",monospace;font-size:10px;color:var(--ok);background:rgba(47,125,91,.15);border:1px solid var(--ok);border-radius:99px;padding:3px 10px;margin-left:auto}
+.t-tabs{display:flex;gap:4px;background:var(--white);border-bottom:1px solid var(--line);padding:0 14px}
+.t-tab{background:none;border:none;border-bottom:3px solid transparent;padding:9px 12px;font-size:12px;font-weight:700;cursor:pointer;color:var(--steel);font-family:"Zen Kaku Gothic New",sans-serif;margin-bottom:-1px}
+.t-tab.on{color:var(--navy);border-bottom-color:var(--amber)}
+.t-body{padding:14px;background:var(--paper)}
+.t-toolbar{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.t-btn{background:var(--stamp);color:#fff;border:none;border-radius:5px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:"Zen Kaku Gothic New",sans-serif}
+.t-btn.ghost{background:var(--white);color:var(--navy);border:1px solid var(--line)}
+.t-hint{font-size:10px;color:var(--steel)}
+.t-grid-wrap{border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--white)}
+.t-grid{border-collapse:separate;border-spacing:0;width:100%;font-size:10px}
+.t-grid th{background:var(--navy);color:var(--paper);padding:6px 5px;text-align:center;font-size:9.5px;font-weight:700;white-space:nowrap;border-right:1px solid rgba(255,255,255,.1)}
+.t-grid th.nc{text-align:left;min-width:90px}
+.t-grid td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:5px;vertical-align:top}
+.t-grid td.nc{font-weight:700;color:var(--navy);font-family:"Zen Kaku Gothic New",sans-serif}
+.t-grid td.nc small{display:block;font-weight:400;color:var(--steel);font-size:9px}
+.tbar{height:6px;border-radius:99px;background:var(--line);width:46px;overflow:hidden;margin:0 auto 2px}
+.tbar i{display:block;height:100%;border-radius:99px}
+.tbar .a{background:var(--amber)}
+.tbar .g{background:var(--ok)}
+.tpct{font-family:"Roboto Mono",monospace;font-size:8.5px;color:var(--steel);text-align:center}
+/* ふりかえり */
+.rcard{background:var(--white);border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:6px;padding:10px 12px;margin-bottom:8px}
+.rcard .rm{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:3px}
+.rcard .rn{font-weight:700;color:var(--navy);font-size:12px;font-family:"Zen Kaku Gothic New",sans-serif}
+.rcard .rt{font-family:"Roboto Mono",monospace;font-size:9px;color:var(--steel);letter-spacing:.05em}
+.rcard .rq{font-size:10px;color:var(--steel);margin-bottom:3px}
+.rcard .rv{font-size:11.5px;line-height:1.75;margin-bottom:8px}
+.rcard textarea{width:100%;border:1px solid var(--line);border-radius:5px;padding:6px 8px;font-size:11px;min-height:44px;background:var(--paper);font-family:inherit;resize:none}
+.rcard-btn{margin-top:6px;background:var(--white);border:1px solid var(--line);border-radius:5px;padding:5px 11px;font-size:11px;cursor:pointer;font-family:"Zen Kaku Gothic New",sans-serif;color:var(--navy)}
+/* AIエクスポートモック */
+.ai-intro{font-size:11px;color:var(--ink2);margin-bottom:10px;line-height:1.7}
+.ai-out{background:var(--navy);color:#7EC8A0;border-radius:7px;padding:12px;font-family:"Roboto Mono",monospace;font-size:9.5px;line-height:1.9;white-space:pre-wrap;max-height:200px;overflow:auto}
+/* モーダルモック */
+.modal-mock{
+  border:1.5px solid var(--navy);border-radius:8px;overflow:hidden;background:var(--white);
+  box-shadow:0 12px 36px -12px rgba(18,33,62,.3)
+}
+.modal-head{background:var(--navy);color:var(--paper);padding:10px 14px;display:flex;align-items:center;gap:8px}
+.modal-head h4{font-size:13px;flex:1;font-family:"Zen Kaku Gothic New",sans-serif}
+.modal-head button{background:none;border:none;color:var(--steelL);font-size:18px;cursor:pointer}
+.modal-body{padding:12px}
+.ans{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:9px 11px;margin-bottom:8px}
+.ans .k{font-size:10px;color:var(--steel);margin-bottom:3px}
+.ans .v{font-size:12px;line-height:1.75}
+.t-comment{background:rgba(184,66,47,.06);border:1px solid rgba(184,66,47,.3);border-radius:6px;padding:9px;margin-top:4px}
+.t-comment .tc-l{font-family:"Roboto Mono",monospace;font-size:9px;color:var(--stamp);margin-bottom:4px}
+.t-comment textarea{width:100%;border:1px solid rgba(184,66,47,.3);border-radius:5px;padding:6px;font-size:11px;min-height:40px;background:var(--white);font-family:inherit;resize:none}
+.save-modal-btn{margin-top:8px;background:var(--navy);color:#fff;border:none;border-radius:5px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:"Zen Kaku Gothic New",sans-serif}
+
+/* ── 使い方フロー ── */
+.flow-section{background:var(--paper);padding:60px 24px}
+.flow-inner{max-width:1000px;margin:0 auto}
+.section-eyebrow{
+  display:inline-block;font-family:"Roboto Mono",monospace;font-size:11px;letter-spacing:.16em;
+  color:var(--stamp);border:1.5px solid var(--stamp);border-radius:3px;padding:3px 10px;
+  text-transform:uppercase;margin-bottom:16px;
+}
+.flow-title{font-size:clamp(22px,3.5vw,34px);color:var(--navy);margin-bottom:40px}
+.flow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.flow-card{
+  background:var(--white);border:1.5px solid var(--line);border-radius:10px;
+  padding:22px 20px;position:relative;overflow:hidden;
+}
+.flow-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--amber)}
+.flow-card.t::before{background:var(--navy)}
+.fc-no{font-family:"Roboto Mono",monospace;font-size:10px;color:var(--steel);margin-bottom:10px;letter-spacing:.1em}
+.fc-title{font-size:16px;font-weight:700;color:var(--navy);font-family:"Zen Kaku Gothic New",sans-serif;margin-bottom:8px}
+.fc-body{font-size:13px;color:var(--ink2);line-height:1.8}
+
+/* ── スペック ── */
+.spec-section{padding:60px 24px;background:var(--white)}
+.spec-inner{max-width:900px;margin:0 auto}
+.spec-title{font-size:clamp(20px,3vw,30px);color:var(--navy);margin-bottom:30px}
+.spec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.spec-card{
+  border:1.5px solid var(--line);border-radius:8px;padding:18px 18px;
+}
+.spec-card h3{font-size:14px;font-weight:700;color:var(--navy);font-family:"Zen Kaku Gothic New",sans-serif;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.spec-card h3 .sc-ico{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;font-size:12px}
+.spec-card h3 .sc-ico.s{background:rgba(47,125,91,.15);color:var(--ok)}
+.spec-card h3 .sc-ico.t{background:rgba(226,153,47,.15);color:var(--amber)}
+.spec-card h3 .sc-ico.sys{background:rgba(18,33,62,.1);color:var(--navy)}
+.spec-card ul{list-style:none;font-size:13px;color:var(--ink2)}
+.spec-card li{padding:5px 0;border-bottom:1px dashed var(--line);display:flex;align-items:baseline;gap:7px}
+.spec-card li:last-child{border-bottom:none}
+.spec-card li::before{content:'›';color:var(--amber);font-weight:700;flex:0 0 auto}
+
+/* ── footer ── */
+footer{background:var(--navy);color:var(--steelL);padding:30px 24px;text-align:center;font-size:12.5px}
+footer b{color:var(--paper)}
+
+/* transitions */
+.panel-body,.s-body,.t-body{transition:opacity .25s ease}
+.fade{opacity:0}
+</style>
+</head>
+<body>
+
+<header class="siteheader">
+  <div class="logo">自動車デジタルミュージアム<small>ワークシートシステム ／ 5年3組 社会科「自動車をつくる工業」</small></div>
+  <span class="badge mono">DEMO FOR OBSERVERS</span>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <span class="hero-eyebrow mono">研究授業 参観者デモ</span>
+    <h1>児童と教師が<em>それぞれ</em><br>どんな画面を使っているか</h1>
+    <p class="hero-sub">このページでは、自由進度学習の各時間に、児童と担任がどの画面をどのように使うかをご覧いただけます。タイムラインで時間を選んでください。</p>
+    <div class="hero-chips">
+      <span class="chip"><span class="dot s"></span>みどり：児童の画面</span>
+      <span class="chip"><span class="dot t"></span>オレンジ：教員の画面</span>
+    </div>
+    <div class="scroll-cue">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 3v10M4 9l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      下にスクロール
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<div class="timeline-section">
+  <div class="tl-inner">
+    <div class="tl-label">授業の流れ（全8時間）</div>
+    <div class="steps" id="steps"></div>
+  </div>
+</div>
+
+<!-- DEMO PANELS -->
+<div id="demoArea">
+  <div class="demo-wrap">
+    <div class="panel" id="panelStu">
+      <div class="panel-head">
+        <span class="panel-role s">児童の画面</span>
+        <span class="panel-title" id="stuTitle">学習ロードマップ</span>
+        <span class="panel-sub mono" id="stuSub">第1時</span>
+      </div>
+      <div class="panel-body" id="stuBody"></div>
+    </div>
+    <div class="panel" id="panelTch">
+      <div class="panel-head">
+        <span class="panel-role t">教員の画面</span>
+        <span class="panel-title" id="tchTitle">初期設定・名簿入力</span>
+        <span class="panel-sub mono" id="tchSub">第1時</span>
+      </div>
+      <div class="panel-body" id="tchBody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOW -->
+<section class="flow-section">
+  <div class="flow-inner">
+    <span class="section-eyebrow">HOW IT WORKS</span>
+    <h2 class="flow-title disp">一つのURLで、役割に応じた画面が開く</h2>
+    <div class="flow-grid">
+      <div class="flow-card">
+        <div class="fc-no mono">児童 / STUDENT</div>
+        <div class="fc-title">ワークシートを記入する</div>
+        <div class="fc-body">15枚のワークシートを「検査タグ」として一覧表示。タップして記入すると自動保存。Mission1〜5はどこから始めてもよい。行を自由に追加できるシートもある。</div>
+      </div>
+      <div class="flow-card">
+        <div class="fc-no mono">担任 / TEACHER</div>
+        <div class="fc-title">進捗・ふりかえりを一括管理</div>
+        <div class="fc-body">30人×15枚の進捗マトリクス。ふりかえり記述を全員分まとめて閲覧・コメント。AIに取り込めるJSONLも1クリックで出力できる。</div>
+      </div>
+      <div class="flow-card t">
+        <div class="fc-no mono">SYSTEM</div>
+        <div class="fc-title">Googleスプレッドシート＋GAS</div>
+        <div class="fc-body">データはスプレッドシートで管理。「名簿」シートに児童のメールアドレスを入れるだけでアクセス管理が完了。追加インストール不要。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPEC -->
+<section class="spec-section">
+  <div class="spec-inner">
+    <span class="section-eyebrow">FEATURES</span>
+    <h2 class="spec-title disp">主な機能一覧</h2>
+    <div class="spec-grid">
+      <div class="spec-card">
+        <h3><span class="sc-ico s">👦</span>児童の機能</h3>
+        <ul>
+          <li>ワークシート15枚（Missionカード×5含む）</li>
+          <li>入力した瞬間に自動保存</li>
+          <li>タグをタップして即座に切り替え</li>
+          <li>展示コーナーを自由に追加・削除</li>
+          <li>進捗リングでどこまで書いたか一目でわかる</li>
+          <li>完成すると「検査済スタンプ」が押される</li>
+          <li>前後のシートへナビゲーション</li>
+        </ul>
+      </div>
+      <div class="spec-card">
+        <h3><span class="sc-ico t">👩‍🏫</span>教員の機能</h3>
+        <ul>
+          <li>30人×15枚の進捗一覧（バー＋%）</li>
+          <li>児童ごとの回答をモーダルで確認・コメント</li>
+          <li>ふりかえり一元管理（絞り込み・未コメントフィルタ）</li>
+          <li>先生記入欄（クリア判定・アドバイス）</li>
+          <li>AI向けJSONL出力（コピーしてAIへ貼り付け）</li>
+          <li>スプレッドシートへのワンクリック書き出し</li>
+        </ul>
+      </div>
+      <div class="spec-card">
+        <h3><span class="sc-ico sys">⚙️</span>システム</h3>
+        <ul>
+          <li>Google Apps Script（GAS）製ウェブアプリ</li>
+          <li>Googleアカウントで自動ログイン・権限判定</li>
+          <li>名簿シートに追加するだけで児童を登録</li>
+          <li>先生欄は児童の保存で上書きされない</li>
+          <li>スマホ・タブレット対応（ピッカー型UI）</li>
+          <li>追加費用・追加インストール不要</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>自動車デジタルミュージアム ワークシートシステム ／ <b>志木市立志木小学校 5年3組</b></div>
+  <div style="margin-top:6px;color:var(--steelL)">担任：藤木萌人　単元「自動車をつくる工業」（全8時間）</div>
+</footer>
+
+<script>
+/* ========== データ定義 ========== */
+const STEPS = [
+  { no:'1', name:'つかむ', s:true, t:true },
+  { no:'2', name:'自由進度①', s:true, t:true },
+  { no:'3', name:'自由進度②', s:true, t:true },
+  { no:'4', name:'中間レビュー', s:true, t:true },
+  { no:'5', name:'自由進度③', s:true, t:true },
+  { no:'6', name:'自由進度④', s:true, t:true },
+  { no:'7', name:'公開', s:true, t:true },
+  { no:'8', name:'ふり返り', s:true, t:true },
+];
+
+/* 各時間のコンテンツ定義 */
+const SCENES = [
+  /* 第1時 */
+  {
+    stuTitle:'学習ロードマップ', stuSub:'第1時', tchTitle:'初期設定 ＋ 見通し確認', tchSub:'第1時',
+    stu: () => renderStu_roadmap(),
+    tch: () => renderTch_setup(),
+  },
+  /* 第2時 */
+  {
+    stuTitle:'Mission1 ─ 組立工場', stuSub:'第2時', tchTitle:'進捗いちらん ＋ 机間支援', tchSub:'第2時',
+    stu: () => renderStu_mission(),
+    tch: () => renderTch_grid(2),
+  },
+  /* 第3時 */
+  {
+    stuTitle:'情報整理シート', stuSub:'第3時', tchTitle:'進捗いちらん ＋ 個別コメント', tchSub:'第3時',
+    stu: () => renderStu_info(),
+    tch: () => renderTch_grid(3),
+  },
+  /* 第4時 中間レビュー */
+  {
+    stuTitle:'中間レビューシート', stuSub:'第4時（本時）', tchTitle:'ふりかえり一元管理', tchSub:'第4時（本時）',
+    stu: () => renderStu_review(),
+    tch: () => renderTch_reflect(),
+  },
+  /* 第5時 */
+  {
+    stuTitle:'展示設計シート', stuSub:'第5時', tchTitle:'進捗いちらん ＋ 児童の回答確認', tchSub:'第5時',
+    stu: () => renderStu_design(),
+    tch: () => renderTch_modal(),
+  },
+  /* 第6時 */
+  {
+    stuTitle:'CM絵コンテ', stuSub:'第6時', tchTitle:'進捗いちらん（完成状況）', tchSub:'第6時',
+    stu: () => renderStu_cm(),
+    tch: () => renderTch_grid(6),
+  },
+  /* 第7時 公開 */
+  {
+    stuTitle:'来館者評価カード', stuSub:'第7時', tchTitle:'相互評価 ＋ AI出力', tchSub:'第7時',
+    stu: () => renderStu_visitor(),
+    tch: () => renderTch_ai(),
+  },
+  /* 第8時 */
+  {
+    stuTitle:'単元振り返りシート', stuSub:'第8時', tchTitle:'ふりかえり一元管理（単元末）', tchSub:'第8時',
+    stu: () => renderStu_final(),
+    tch: () => renderTch_reflect_final(),
+  },
+];
+
+/* ========== タイムライン描画 ========== */
+let cur = 0;
+function drawSteps(){
+  const w=document.getElementById('steps');
+  w.innerHTML = STEPS.map((s,i)=>`
+    <div class="step${i===cur?' on':''}" data-i="${i}">
+      <span class="step-no mono">第${s.no}時</span>
+      <span class="step-name">${s.name}</span>
+      <div class="step-who">
+        <span class="who-dot s${s.s?' on':''}"></span>
+        <span class="who-dot t${s.t?' on':''}"></span>
+      </div>
+    </div>`).join('');
+  w.querySelectorAll('.step').forEach(el=>{
+    el.onclick = ()=>{ cur=+el.dataset.i; apply(); };
+  });
+}
+
+function apply(){
+  const sc = SCENES[cur];
+  document.getElementById('stuTitle').textContent = sc.stuTitle;
+  document.getElementById('stuSub').textContent = sc.stuSub;
+  document.getElementById('tchTitle').textContent = sc.tchTitle;
+  document.getElementById('tchSub').textContent = sc.tchSub;
+  const sb=document.getElementById('stuBody'), tb=document.getElementById('tchBody');
+  sb.classList.add('fade'); tb.classList.add('fade');
+  setTimeout(()=>{
+    sb.innerHTML = sc.stu();
+    tb.innerHTML = sc.tch();
+    sb.classList.remove('fade'); tb.classList.remove('fade');
+  }, 160);
+  drawSteps();
+}
+
+/* ========== 児童モック ========== */
+function mockbar(url){
+  return `<div class="mockbar"><div class="mockbar-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="mockbar-url">${url}</div></div>`;
+}
+function stag(no,name,q,active,done,pct){
+  const c = 2*Math.PI*8;
+  return `<div class="s-tag${active?' active':''}${done?' done':''}">
+    <div class="s-tag-no">${no}</div>
+    <div style="min-width:0;flex:1"><div class="s-tag-n">${name}</div><div class="s-tag-q">${q}</div></div>
+    <svg class="ring-sm" viewBox="0 0 20 20"><circle class="rbg" cx="10" cy="10" r="8"/><circle class="rfg" cx="10" cy="10" r="8" transform="rotate(-90 10 10)" stroke-dasharray="${(c*pct/100).toFixed(1)} ${c.toFixed(1)}"/></svg>
+  </div>`;
+}
+function rail1(){
+  return `<div class="s-rail">
+    <div class="s-rail-ttl">計画</div>
+    ${stag(1,'学習ロードマップ','単元の地図（第1時に書く）',true,false,30)}
+    ${stag(2,'自由進度計画表','毎時間の計画・ふりかえり',false,false,0)}
+    <div class="s-rail-ttl" style="margin-top:8px">MISSION</div>
+    ${stag('M1','Mission1','工場の工夫は？',false,false,0)}
+    ${stag('M2','Mission2','関連工場のつながりは？',false,false,0)}
+  </div>`;
+}
+function rail2(active, dones, pcts){
+  const items=[
+    [1,'学習ロードマップ','単元の地図'],
+    [2,'自由進度計画表','毎時間の計画・ふりかえり'],
+    ['M1','Mission1','工場の工夫は？'],
+    ['M2','Mission2','関連工場のつながりは？'],
+    ['M3','Mission3','届ける工夫は？'],
+    [4,'情報整理シート','「工夫」と「願い」をつなげよう'],
+    [5,'資料読み取りシート','資料を根拠にするためのメモ'],
+  ];
+  return `<div class="s-rail">${items.map((it,i)=>
+    stag(it[0],it[1],it[2],i===active,dones.includes(i),pcts[i]||0)
+  ).join('')}</div>`;
+}
+
+function renderStu_roadmap(){
+  return `<div class="desc"><b>第1時：学習ロードマップを記入</b>パフォーマンス課題（デジタルミュージアム）を知り、単元全体のめあてと学習計画の見通しを立てます。</div>
+${mockbar('shiki-ws.example.com')}
+<div class="mockscreen">
+  <div class="s-bar"><span class="s-brand">自動車デジタルミュージアム</span><span class="s-name">志木 太郎 / A班 / 出席1</span><span class="s-save">自動保存</span></div>
+  <div class="s-body">
+    ${rail1()}
+    <div class="s-sheet">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="s-eyebrow">WORKSHEET 1</span>
+      </div>
+      <div class="s-sheet-title">学習ロードマップ</div>
+      <div class="s-sheet-sub">単元の地図（第1時に書く）</div>
+      <div class="s-note"><b>ゴール（パフォーマンス課題）</b>あなたは「自動車デジタルミュージアム」の学芸員です。来館者が「なるほど！」と感じる展示をつくりましょう。完成は第6時のおわりまで。</div>
+      <div class="s-flabel">単元をとおしての自分のめあて</div>
+      <div class="s-field" style="color:var(--steel);font-size:10.5px">来館者に「つながり」がひと目で伝わる展示にしたい…</div>
+      <div class="s-flabel" style="margin-top:10px">学習問題（クラスでつくった問いを書こう）</div>
+      <div class="s-field" style="font-size:10.5px;min-height:38px"></div>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderStu_mission(){
+  return `<div class="desc"><b>第2時：Mission1に取り組む</b>教科書・QRコンテンツ・動画などから自由に選んで調べ、クリア条件を自分の言葉で書きます。使った資料もチェック。</div>
+${mockbar('shiki-ws.example.com')}
+<div class="mockscreen">
+  <div class="s-bar"><span class="s-brand">自動車デジタルミュージアム</span><span class="s-name">志木 太郎 / A班</span><span class="s-save">保存しました 09:41</span></div>
+  <div class="s-body">
+    ${rail2(2,[0],[100,40,0,0,0,0,0])}
+    <div class="s-sheet">
+      <span class="s-eyebrow">MISSION M1</span>
+      <div class="s-sheet-title">Mission1</div>
+      <div class="s-sheet-sub">工場では、どんな工夫をして自動車をつくっている？</div>
+      <div class="s-note"><b>使える資料</b>教科書 P.14〜15 ／ QR「組み立て工場の人にインタビュー」</div>
+      <div class="s-flabel">使った資料</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        ${['教科書','QRコンテンツ'].map(o=>`<span style="background:var(--navy);color:#fff;border-radius:99px;padding:4px 10px;font-size:10px;font-family:Zen Kaku Gothic New,sans-serif;font-weight:700">${o}</span>`).join('')}
+        ${['資料集','動画','友達との相談'].map(o=>`<span style="background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:4px 10px;font-size:10px">${o}</span>`).join('')}
+      </div>
+      <div class="s-flabel">分かったこと（事実）</div>
+      <div class="s-field" style="font-size:10.5px;line-height:1.7">プレス→溶接→塗装→組み立て→検査の順でつくる。ロボットで正確にすばやくつくる。指示ビラで注文ごとにつくり分けている。</div>
+      <div class="s-flabel" style="margin-top:10px">クリア条件の説明（自分の言葉で）</div>
+      <div class="s-field" style="font-size:10.5px;border-color:var(--amber)">組立工場では、工程の順番とロボット・指示ビラの工夫で「すばやく、正確に、効率よく」つくっていると説明できる。</div>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderStu_info(){
+  return `<div class="desc"><b>第3時：情報整理シートを記入</b>調べた内容を「工夫→願い」のつながりで整理します。展示に使う情報を◎で選びます。行は自由にふやせます。</div>
+${mockbar('shiki-ws.example.com')}
+<div class="mockscreen">
+  <div class="s-bar"><span class="s-brand">自動車デジタルミュージアム</span><span class="s-name">志木 太郎 / A班</span><span class="s-save">保存しました 10:05</span></div>
+  <div class="s-body" style="display:block">
+    <div class="s-sheet" style="padding:12px">
+      <span class="s-eyebrow">WORKSHEET 4</span>
+      <div class="s-sheet-title">情報整理シート</div>
+      <div class="s-sheet-sub">「工夫」と「願い」をつなげよう</div>
+      <div style="overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--white);margin-top:10px">
+        <table style="width:100%;border-collapse:collapse;font-size:10.5px;min-width:480px">
+          <thead><tr>
+            <th style="background:var(--navy);color:var(--paper);padding:7px 8px;text-align:left;font-size:10px">見つけた工夫や努力</th>
+            <th style="background:var(--navy);color:var(--paper);padding:7px 8px;text-align:left;font-size:10px">根拠の資料</th>
+            <th style="background:var(--navy);color:var(--paper);padding:7px 8px;text-align:left;font-size:10px">こたえている「人々の願い」</th>
+            <th style="background:var(--navy);color:var(--paper);padding:7px 8px;text-align:center;font-size:10px">一番</th>
+          </tr></thead>
+          <tbody>
+            ${[
+              ['ロボットで正確すばやく生産','教科書P.14 写真','安全で品質のよい車がほしい','◎'],
+              ['指示ビラで注文ごとにつくり分け','QRインタビュー','自分だけの仕様の車がほしい',''],
+              ['関連工場が順番に部品を届ける','教科書P.16 図','手ごろな価格で買いたい',''],
+            ].map(r=>`<tr>${r.map((c,ci)=>`<td style="border-top:1px solid var(--line);padding:6px 8px;${ci===3?'text-align:center;font-weight:700;color:var(--amber)':''}">${c}</td>`).join('')}</tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <button style="margin-top:8px;background:var(--white);border:1.5px dashed var(--amber);border-radius:6px;padding:7px 14px;font-size:11px;font-weight:700;font-family:'Zen Kaku Gothic New',sans-serif;cursor:pointer;color:var(--navy)">＋ 行をふやす</button>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderStu_review(){
+  return `<div class="desc"><b>第4時（本時）：中間レビューシートを記入</b>グループ同士で展示を見合い、自班の重点賞に生かせるヒントを書きます。修正の型を選んで後半の計画を立てます。</div>
+${mockbar('shiki-ws.example.com')}
+<div class="mockscreen">
+  <div class="s-bar"><span class="s-brand">自動車デジタルミュージアム</span><span class="s-name">宗岡 花子 / A班</span><span class="s-save">保存しました 10:28</span></div>
+  <div class="s-body" style="display:block">
+    <div class="s-sheet" style="padding:12px">
+      <span class="s-eyebrow">WORKSHEET 7 — 中間レビュー（本時）</span>
+      <div class="s-sheet-title">中間レビューシート</div>
+      <div class="s-flabel" style="margin-top:10px">1　自分の班の重点賞</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        ${['資料活用賞','つながり賞','伝わる展示賞'].map((o,i)=>`<label style="display:inline-flex;align-items:center;gap:7px;background:${i===1?'var(--navy)':'var(--paper)'};border:1.5px solid ${i===1?'var(--navy)':'var(--line)'};color:${i===1?'#fff':'var(--ink)'};border-radius:99px;padding:8px 14px;font-size:11.5px;cursor:pointer"><input type="radio" style="margin:0;accent-color:var(--amber)"${i===1?' checked':''}>${o}</label>`).join('')}
+      </div>
+      <div class="s-flabel">2　ペアの班からヒントをさがす</div>
+      <div style="overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--white);margin-bottom:10px">
+        <table style="width:100%;border-collapse:collapse;font-size:10.5px;min-width:400px">
+          <thead><tr>
+            ${['見た班','良さ（まねしたいヒント）','もっと'].map(h=>`<th style="background:var(--navy);color:var(--paper);padding:6px 8px;text-align:left;font-size:9.5px">${h}</th>`).join('')}
+          </tr></thead>
+          <tbody><tr>
+            <td style="border-top:1px solid var(--line);padding:6px 8px">B班</td>
+            <td style="border-top:1px solid var(--line);padding:6px 8px">見出しがひとことで分かりやすい</td>
+            <td style="border-top:1px solid var(--line);padding:6px 8px">願いの言葉をもっと前に</td>
+          </tr></tbody>
+        </table>
+      </div>
+      <div class="s-flabel">3　修正の型をえらぶ</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px">
+        ${['けずる','つなぐ（選択）','たしかめる'].map((o,i)=>`<label style="display:inline-flex;align-items:center;gap:6px;background:${i===1?'var(--navy)':'var(--paper)'};color:${i===1?'#fff':'var(--ink)'};border:1.5px solid ${i===1?'var(--navy)':'var(--line)'};border-radius:99px;padding:7px 13px;font-size:11px;cursor:pointer"><input type="radio" style="margin:0"${i===1?' checked':''}>${o}</label>`).join('')}
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderStu_design(){
+  return `<div class="desc"><b>第5時：展示設計シートを記入</b>コーナーの見出し・使う資料・説明を設計します。「＋ コーナーをふやす」で自由に展示項目を追加できます。</div>
+${mockbar('shiki-ws.example.com')}
+<div class="mockscreen">
+  <div class="s-bar"><span class="s-brand">自動車デジタルミュージアム</span><span class="s-name">志木 太郎 / A班</span><span class="s-save">保存しました 10:52</span></div>
+  <div class="s-body" style="display:block">
+    <div class="s-sheet" style="padding:12px">
+      <span class="s-eyebrow">WORKSHEET 6</span>
+      <div class="s-sheet-title">展示設計シート</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0">
+        <div><div class="s-flabel">だれに見てほしい？</div><input style="width:100%;border:1px solid var(--line);border-radius:5px;padding:6px 8px;font-size:11px;background:var(--paper)" value="3〜4年生と保護者の方"></div>
+        <div><div class="s-flabel">重点賞</div>
+          <select style="width:100%;border:1px solid var(--amber);border-radius:5px;padding:6px 8px;font-size:11px;background:var(--paper)"><option selected>つながり賞</option></select>
+        </div>
+      </div>
+      <div class="s-flabel">一番伝えたいこと</div>
+      <div class="s-field" style="font-size:10.5px;margin-bottom:10px;border-color:var(--amber)">工夫は全部「人々の願い」のためにある</div>
+      <div class="s-flabel">展示の構成（コーナーをふやせます）</div>
+      <div style="overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--white);margin-bottom:8px">
+        <table style="width:100%;border-collapse:collapse;font-size:10.5px;min-width:400px">
+          <thead><tr>${['コーナー','見出し','使う資料（◎）','説明'].map(h=>`<th style="background:var(--navy);color:var(--paper);padding:6px 8px;text-align:left;font-size:9.5px">${h}</th>`).join('')}</tr></thead>
+          <tbody>
+            ${[['1','なぜ、ロボット？','ロボット写真・教科書図','お客さんの注文に応えるため！'],['2','コストと現地生産','輸送費グラフ','コストをおさえ、現地の願いにこたえる'],['3','これからの願い','EVの写真','環境への願いから電気自動車へ']]
+              .map(r=>`<tr>${r.map(c=>`<td style="border-top:1px solid var(--line);padding:5px 7px">${c}</td>`).join('')}</tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <button style="background:var(--white);border:1.5px dashed var(--amber);border-radius:6px;padding:7px 14px;font-size:11px;font-weight:700;font-family:'Zen Kaku Gothic New',sans-serif;cursor:pointer;color:var(--navy)">＋ コーナーをふやす</button>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderStu_cm(){
+  return `<div class="desc"><b>第6時：CM絵コンテを記入（表現方法を選んだ班）</b>カットごとに「絵・内容・ナレーション」を対応させて設計します。カットも自由にふやせます。</div>
+${mockbar('shiki-ws.example.com')}
+<div class="mockscreen">
+  <div class="s-bar"><span class="s-brand">自動車デジタルミュージアム</span><span class="s-name">館 さくら / B班</span><span class="s-save">保存しました 11:10</span></div>
+  <div class="s-body" style="display:block">
+    <div class="s-sheet" style="padding:12px">
+      <span class="s-eyebrow" style="background:rgba(184,66,47,.08)">WORKSHEET 11 — CM絵コンテ</span>
+      <div class="s-sheet-title">CM絵コンテ</div>
+      <div style="display:flex;gap:10px;margin:8px 0 10px;flex-wrap:wrap">
+        <div><div class="s-flabel">テーマ</div><div class="s-field" style="font-size:10.5px;min-height:32px">工夫はすべて人々の願いのため</div></div>
+        <div><div class="s-flabel">長さ</div>
+          <div style="display:flex;gap:6px;margin-top:4px">
+            ${['15秒','30秒（選択）','60秒'].map((o,i)=>`<label style="display:inline-flex;align-items:center;gap:5px;font-size:11px;background:${i===1?'var(--navy)':'var(--paper)'};color:${i===1?'#fff':'var(--ink)'};border:1px solid ${i===1?'var(--navy)':'var(--line)'};border-radius:99px;padding:5px 10px;cursor:pointer"><input type="radio" style="margin:0"${i===1?' checked':''}>${o}</label>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div style="overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--white)">
+        <table style="width:100%;border-collapse:collapse;font-size:10.5px;min-width:440px">
+          <thead><tr>${['カット','絵（画面のようす）','内容（何を見せる？）','ナレーション（何と言う？）'].map(h=>`<th style="background:var(--navy);color:var(--paper);padding:6px 8px;text-align:left;font-size:9.5px">${h}</th>`).join('')}</tr></thead>
+          <tbody>
+            ${[['1','組立ラインの全体図','ロボットが車体を溶接する映像','この工場で、1台の車が生まれます。'],
+               ['2','指示ビラのアップ','注文書から指示ビラへ','お客さんの注文どおりに、つくり分けています。'],
+               ['3','電気自動車のシルエット','未来の車のイメージ','人々の願いが、車の未来を変えています。']]
+              .map(r=>`<tr>${r.map(c=>`<td style="border-top:1px solid var(--line);padding:5px 7px;vertical-align:top">${c}</td>`).join('')}</tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <button style="margin-top:8px;background:var(--white);border:1.5px dashed var(--amber);border-radius:6px;padding:7px 14px;font-size:11px;font-weight:700;font-family:'Zen Kaku Gothic New',sans-serif;cursor:pointer;color:var(--navy)">＋ カットをふやす</button>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderStu_visitor(){
+  return `<div class="desc"><b>第7時：来館者評価カード（来館者役として記入）</b>見た展示に投票し、「なるほど！」と思ったポイントを感想として書きます。</div>
+${mockbar('shiki-ws.example.com')}
+<div class="mockscreen">
+  <div class="s-bar"><span class="s-brand">自動車デジタルミュージアム</span><span class="s-name">柳瀬 健 / C班</span><span class="s-save">保存しました 13:41</span></div>
+  <div class="s-body" style="display:block">
+    <div class="s-sheet" style="padding:12px">
+      <span class="s-eyebrow">WORKSHEET 9 — 来館者評価カード</span>
+      <div class="s-sheet-title">来館者評価カード</div>
+      <div style="overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--white);margin-top:10px">
+        <table style="width:100%;border-collapse:collapse;font-size:10.5px;min-width:440px">
+          <thead><tr>${['見た展示','投票（1つ）','なるほど度','感想'].map(h=>`<th style="background:var(--navy);color:var(--paper);padding:6px 8px;text-align:left;font-size:9.5px">${h}</th>`).join('')}</tr></thead>
+          <tbody>
+            ${[['A班の展示','つながり賞','★★★★★','工夫と願いのつながりが1枚でわかった！'],
+               ['B班のCM','伝わる展示賞','★★★★','ナレーションで分かりやすかった'],
+               ['D班の展示','資料活用賞','★★★','グラフの選び方が上手'],
+              ].map(r=>`<tr>${r.map((c,ci)=>`<td style="border-top:1px solid var(--line);padding:6px 7px;${ci===2?'color:var(--amber);font-weight:700':''}">${c}</td>`).join('')}</tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <button style="margin-top:8px;background:var(--white);border:1.5px dashed var(--amber);border-radius:6px;padding:7px 14px;font-size:11px;font-weight:700;font-family:'Zen Kaku Gothic New',sans-serif;cursor:pointer;color:var(--navy)">＋ カードをふやす</button>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderStu_final(){
+  return `<div class="desc"><b>第8時：単元振り返りシート</b>学習問題への自分の答えを、「工夫や努力」「人々の願い」「つながり」の言葉を使ってまとめます。</div>
+${mockbar('shiki-ws.example.com')}
+<div class="mockscreen">
+  <div class="s-bar"><span class="s-brand">自動車デジタルミュージアム</span><span class="s-name">志木 太郎 / A班</span><span class="s-save">保存しました 14:22</span></div>
+  <div class="s-body" style="display:block">
+    <div class="s-sheet" style="padding:12px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="s-eyebrow">WORKSHEET 10</span>
+        <span class="s-stamp">検査済</span>
+      </div>
+      <div class="s-sheet-title">単元振り返りシート</div>
+      <div class="s-note" style="margin-top:8px"><b>学習問題</b>自動車づくりにたずさわる人々は、よりよい自動車をたくさんつくるために、どのようなくふうや努力をしているのでしょうか。</div>
+      <div class="s-flabel">1　学習問題への自分の答え</div>
+      <div class="s-field" style="font-size:10.5px;line-height:1.75;border-color:var(--amber)">自動車づくりを支える人たちは、ロボットや指示ビラで「すばやく・正確・注文どおり」につくる工夫をしています。関連工場との協力、現地生産など、すべての工夫が「安全・環境・コスト」という人々の願いにこたえるためのものだと分かりました。</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:10px 0">
+        ${['五つのMissionをクリアできた','一番伝えたいことを選んで展示できた','工夫と願いの「つながり」を示せた'].map(q=>`<div style="background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px"><div style="font-size:10px;color:var(--steel);margin-bottom:5px">${q}</div><span style="background:var(--amber);color:var(--navy);border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700">◎</span></div>`).join('')}
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+/* ========== 教員モック ========== */
+const STUDENTS = [
+  ['志木 太郎','A班'],['宗岡 花子','A班'],['柳瀬 健','A班'],['本町 みお','A班'],['館 さくら','A班'],
+  ['中宗岡 蓮','B班'],['幸町 結衣','B班'],['上宗岡 大和','B班'],['新座 葵','B班'],['浦和 悠','B班'],
+  ['大宮 凛','C班'],['川口 蒼','C班'],['浦和 碧','C班'],['川越 光','C班'],['所沢 冬','C班'],
+];
+const WS_COLS = ['1','2','M1','M2','M3','M4','M5','4','5','6','7','11','8','9','10'];
+
+function pctColor(p){ return p===100?'g':'a'; }
+
+function gridRows(maxDone){
+  const data = {
+    0: [100,20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    1: [100,40, 100,80, 0, 0, 0,60, 0,40, 0, 0, 0, 0, 0],
+    2: [100,70,100,100,80,60, 0,80,60,80,60,60, 0, 0, 0],
+    3: [100,70,100,100,80,60,40,80,60,80,80,60,60,40, 0],
+    4: [100,90,100,100,100,100,80,100,100,100,100,80,80,60,20],
+    5: [100,100,100,100,100,100,100,100,100,100,100,100,100,80,60],
+    6: [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100],
+    7: [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100],
+  };
+  const row = data[Math.min(maxDone, 7)];
+  return STUDENTS.slice(0,8).map(([n,t],i)=>{
+    const vals = WS_COLS.map((_, ci) => {
+      const base = row[ci];
+      const jitter = [0,-20,-10,0,10,0,-20,10][i] || 0;
+      return Math.max(0, Math.min(100, base + jitter));
+    });
+    const avg = Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+    return `<tr>
+      <td class="nc">${n}<small>${t} / ${i+1}</small></td>
+      ${vals.map(v=>`<td><div class="tbar"><i class="${pctColor(v)}" style="width:${v}%"></i></div><div class="tpct">${v}</div></td>`).join('')}
+      <td style="text-align:center;font-family:'Roboto Mono',monospace;font-weight:700;font-size:11px;color:var(--navy)">${avg}%</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderTch_setup(){
+  return `<div class="desc"><b>第1時：初期セットアップ ＋ 単元の導入を見守る</b>授業前に名簿を入力し、デプロイを完了させます。授業中は学習計画の立案を巡回します。</div>
+${mockbar('管理用スプレッドシート — Google Sheets')}
+<div class="mockscreen" style="background:var(--white);padding:14px;border-radius:8px">
+  <div style="font-size:11px;font-weight:700;color:var(--navy);font-family:'Zen Kaku Gothic New',sans-serif;margin-bottom:10px">📋 名簿シートに児童を入力</div>
+  <table style="width:100%;border-collapse:collapse;font-size:11px">
+    <thead><tr>${['出席番号','氏名','メールアドレス','班'].map(h=>`<th style="background:var(--navy);color:var(--paper);padding:6px 8px;text-align:left;font-size:10px">${h}</th>`).join('')}</tr></thead>
+    <tbody>${[['1','志木 太郎','taro@shiki.ed.jp','A班'],['2','宗岡 花子','hanako@shiki.ed.jp','A班'],['3','柳瀬 健','ken@shiki.ed.jp','A班'],['…','…','…','…']].map(r=>`<tr>${r.map(c=>`<td style="border-top:1px solid var(--line);padding:5px 8px">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table>
+  <div style="margin-top:14px;background:rgba(47,125,91,.08);border:1px solid var(--ok);border-radius:6px;padding:10px;font-size:11px;color:var(--ok)">
+    ✓ セットアップ完了　ウェブアプリURL：<span style="font-family:'Roboto Mono',monospace">https://script.google.com/macros/…</span>
+  </div>
+  <div style="margin-top:10px;font-size:11px;color:var(--ink2);line-height:1.75">このURLを児童に配布するだけで、各自のアカウントでログインできます。担任が開くと自動的に管理画面になります。</div>
+</div>`;
+}
+
+function renderTch_grid(step){
+  const comments = {
+    2:'◎ミッション1に取り組んでいる児童が多い。停滞2名を優先巡回。',
+    3:'ふりかえりの言葉に「つながり」が出てきた。もっとの問い返しを継続。',
+    6:'ほぼ全員完成。残り2名に個別支援。CMコンテの班は展示も完成させるよう声掛け。',
+  };
+  return `<div class="desc"><b>第${step}時：進捗いちらんで全体を把握</b>バーが伸びていない児童を優先巡回。セルをクリックすると回答詳細・先生コメント入力ができます。</div>
+${mockbar('shiki-ws.example.com — ワークシート管理（教員）')}
+<div class="mockscreen">
+  <div class="t-bar"><span class="t-brand">ワークシート管理</span><span class="t-sub">担任用ダッシュボード</span><span class="t-chip">${comments[step]?'最新にしました':'読み込み完了'}</span></div>
+  <div class="t-tabs"><button class="t-tab on">進捗いちらん</button><button class="t-tab">ふりかえり一元管理</button><button class="t-tab">AI出力</button></div>
+  <div class="t-body">
+    ${comments[step]?`<div style="background:rgba(47,125,91,.08);border:1px solid var(--ok);border-radius:6px;padding:9px 12px;font-size:11.5px;color:var(--ok);margin-bottom:10px">📌 ${comments[step]}</div>`:''}
+    <div class="t-toolbar">
+      <button class="t-btn ghost" style="font-size:11px">最新にする</button>
+      <button class="t-btn" style="font-size:11px">スプレッドシートに書き出す</button>
+      <span class="t-hint">セルをクリック→その子の回答＋コメント入力</span>
+    </div>
+    <div class="t-grid-wrap">
+      <table class="t-grid">
+        <thead><tr><th class="nc">児童</th>${WS_COLS.map(c=>`<th>${c}</th>`).join('')}<th>平均</th></tr></thead>
+        <tbody>${gridRows(step-1)}</tbody>
+      </table>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderTch_reflect(){
+  const cards=[
+    {n:'宗岡 花子',t:'A班',ws:'中間レビューシート',scene:'修正の型',q:'生かすこと（ぐたいてきに）',
+     v:'見出しを「なぜ、ロボット？」に変えて、願いとのつながりが一目で分かるようにする。',cm:'良い改善ポイントです。根拠の資料はP.14の写真を使ってみよう。'},
+    {n:'柳瀬 健',t:'A班',ws:'中間レビューシート',scene:'後半の計画',
+     q:'ヒントを生かして後半にやること',v:'コーナーを3→2に絞る。「なぜこの工夫？」の説明を各コーナーに追加する。',cm:''},
+    {n:'本町 みお',t:'A班',ws:'自由進度計画表',scene:'第4時',q:'ふりかえり（ひと言）',
+     v:'友達の展示を見て、「つながり」の見出しが大事だと分かった。',cm:''},
+  ];
+  return `<div class="desc"><b>第4時（本時）：ふりかえり一元管理で全員の思考を把握</b>「未コメントのみ」で絞り込み、効率よくコメントを返せます。全員分がスプレッドシートにも書き出せます。</div>
+${mockbar('shiki-ws.example.com — ワークシート管理（教員）')}
+<div class="mockscreen">
+  <div class="t-bar"><span class="t-brand">ワークシート管理</span><span class="t-sub">担任用ダッシュボード</span><span class="t-chip">読み込み完了</span></div>
+  <div class="t-tabs"><button class="t-tab">進捗いちらん</button><button class="t-tab on">ふりかえり一元管理</button><button class="t-tab">AI出力</button></div>
+  <div class="t-body">
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px">
+      <select style="border:1px solid var(--line);border-radius:5px;padding:5px 8px;font-size:11px;background:var(--white)"><option>すべてのワークシート</option></select>
+      <select style="border:1px solid var(--line);border-radius:5px;padding:5px 8px;font-size:11px;background:var(--white)"><option>すべての児童</option></select>
+      <select style="border:1px solid var(--amber);border-radius:5px;padding:5px 8px;font-size:11px;background:var(--amber2)"><option>未コメントのみ</option></select>
+      <span style="font-size:11px;color:var(--steel);align-self:center">28 件</span>
+    </div>
+    ${cards.map(c=>`<div class="rcard">
+      <div class="rm"><span class="rn">${c.n}</span><span class="rt">${c.t} ／ ${c.ws} ／ ${c.scene}</span></div>
+      <div class="rq">${c.q}</div>
+      <div class="rv">${c.v}</div>
+      <textarea style="width:100%;border:1px solid var(--line);border-radius:5px;padding:6px;font-size:11px;min-height:38px;background:var(--paper);font-family:inherit;resize:none" placeholder="先生コメント">${c.cm}</textarea>
+      <button class="rcard-btn">コメントを保存</button>
+    </div>`).join('')}
+  </div>
+</div>`;
+}
+
+function renderTch_modal(){
+  return `<div class="desc"><b>第5時：進捗セルをクリック→回答確認＋コメント入力</b>停滞している児童のセルを選んで、クリア状況を確認し先生欄にアドバイスを記入します。</div>
+${mockbar('shiki-ws.example.com — ワークシート管理（教員）')}
+<div class="mockscreen">
+  <div class="t-bar"><span class="t-brand">ワークシート管理</span><span class="t-sub">担任用ダッシュボード</span></div>
+  <div class="t-body" style="background:rgba(0,0,0,.2)">
+    <div class="modal-mock">
+      <div class="modal-head">
+        <h4>新座 葵　／　Mission3　─　完成した自動車を届けるために？</h4>
+        <button>×</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:10.5px;color:var(--steel);margin-bottom:8px">最終更新：08/27 10:41</div>
+        <div class="ans"><div class="k">使った資料</div><div class="v">教科書P.18〜19、輸送費グラフ</div></div>
+        <div class="ans"><div class="k">分かったこと（事実）</div><div class="v">キャリアカーや船で国内外に運ぶ。現地生産でコストをおさえている。</div></div>
+        <div class="ans"><div class="k">クリア条件の説明（自分の言葉で）</div><div class="v">輸送費をへらすために現地生産をしている。その国の人の好みに合わせた車もつくれる。</div>
+          <div class="t-comment">
+            <div class="tc-l">先生コメント</div>
+            <textarea placeholder="コメントを入力">「費用と時間」という言葉も入れてみよう。P.19のグラフを根拠にできるよ。</textarea>
+          </div>
+        </div>
+        <div class="ans" style="background:rgba(184,66,47,.04);border-color:rgba(184,66,47,.3)">
+          <div class="k" style="color:var(--stamp)">先生チェック</div>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            ${['クリア','もう少し（選択）'].map((o,i)=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;background:${i===1?'var(--navy)':'var(--paper)'};color:${i===1?'#fff':'var(--ink)'};border:1px solid ${i===1?'var(--navy)':'var(--line)'};border-radius:99px;padding:6px 12px;cursor:pointer"><input type="radio" style="margin:0"${i===1?' checked':''}>${o}</label>`).join('')}
+          </div>
+        </div>
+        <button class="save-modal-btn">先生欄とコメントを保存</button>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderTch_ai(){
+  const jsonl = `{"児童":"志木 太郎","班":"A班","ワークシート":"単元振り返りシート","設問":"学習問題への自分の答え","児童の記述":"すべての工夫は人々の願いにこたえるためにある","教師コメント":""}
+{"児童":"宗岡 花子","班":"A班","ワークシート":"単元振り返りシート","設問":"学習問題への自分の答え","児童の記述":"工夫と願いのつながりを展示で伝えられた","教師コメント":"よく整理できています"}
+{"児童":"柳瀬 健","班":"A班","ワークシート":"自由進度計画表","設問":"ふりかえり（ひと言）","児童の記述":"資料をへらすと伝わりやすくなった","教師コメント":""}`;
+  return `<div class="desc"><b>第7時：AI出力タブ</b>ふりかえり記述を1行1件のJSONLで出力。そのままAIに貼り付けて「傾向をまとめて」「コメント案を作って」と使えます。</div>
+${mockbar('shiki-ws.example.com — ワークシート管理（教員）')}
+<div class="mockscreen">
+  <div class="t-bar"><span class="t-brand">ワークシート管理</span><span class="t-sub">担任用ダッシュボード</span></div>
+  <div class="t-tabs"><button class="t-tab">進捗いちらん</button><button class="t-tab">ふりかえり一元管理</button><button class="t-tab on">AI出力</button></div>
+  <div class="t-body">
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <button class="t-btn" style="font-size:11px">この条件でAI用データをつくる</button>
+      <button class="t-btn ghost" style="font-size:11px">コピーする</button>
+    </div>
+    <div class="ai-intro">ふりかえり一元管理タブのしぼりこみ条件がそのまま反映されます。1行1件のJSON（JSONL）をコピーして、AIに貼り付けて使えます。</div>
+    <div class="ai-out">${jsonl}</div>
+    <div style="margin-top:12px;background:rgba(18,33,62,.06);border-radius:6px;padding:10px;font-size:11px;color:var(--ink2);line-height:1.75">
+      💡 <b>AIへの貼り付け例</b><br>
+      「上のJSONを見て、この学級のふりかえりの傾向を教えてください。」<br>
+      「コメントが空の児童へのアドバイス案を作ってください。」
+    </div>
+  </div>
+</div>`;
+}
+
+function renderTch_reflect_final(){
+  return `<div class="desc"><b>第8時：ふりかえり一元管理（単元末）</b>単元を通じた記述が集まります。学習問題への答えを比較して、単元の評価資料として活用できます。</div>
+${mockbar('shiki-ws.example.com — ワークシート管理（教員）')}
+<div class="mockscreen">
+  <div class="t-bar"><span class="t-brand">ワークシート管理</span><span class="t-sub">担任用ダッシュボード</span></div>
+  <div class="t-tabs"><button class="t-tab">進捗いちらん</button><button class="t-tab on">ふりかえり一元管理</button><button class="t-tab">AI出力</button></div>
+  <div class="t-body">
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px">
+      <select style="border:1px solid var(--amber);border-radius:5px;padding:5px 8px;font-size:11px;background:var(--amber2)"><option>単元振り返りシート</option></select>
+      <select style="border:1px solid var(--line);border-radius:5px;padding:5px 8px;font-size:11px;background:var(--white)"><option>すべての児童</option></select>
+      <span style="font-size:11px;color:var(--steel);align-self:center">30 件</span>
+    </div>
+    ${[
+      {n:'志木 太郎',v:'すべての工夫は、安全・環境・コストという人々の願いにこたえるためにある。工夫と願いのつながりが、日本の自動車づくりの強さだと分かった。',cm:''},
+      {n:'宗岡 花子',v:'工夫→願いのつながりを展示で表現できた。情報を「選ぶ」ことの大切さを学べた。',cm:'すごく深い気づきです。'},
+      {n:'柳瀬 健',v:'資料をへらすと伝わりやすくなる。来館者のことを考えながら選べた。',cm:''},
+    ].map(c=>`<div class="rcard">
+      <div class="rm"><span class="rn">${c.n}</span><span class="rt">単元振り返りシート ／ 学習問題への答え</span></div>
+      <div class="rv">${c.v}</div>
+      <textarea style="width:100%;border:1px solid var(--line);border-radius:5px;padding:6px;font-size:11px;min-height:38px;background:var(--paper);font-family:inherit;resize:none" placeholder="先生コメント">${c.cm}</textarea>
+      <button class="rcard-btn">コメントを保存</button>
+    </div>`).join('')}
+  </div>
+</div>`;
+}
+
+/* ========== 初期化 ========== */
+drawSteps();
+apply();
+
+/* 自動デモ（10秒ごとに進む、操作したらリセット） */
+let autoTimer = setInterval(()=>{
+  cur = (cur+1)%SCENES.length;
+  apply();
+},10000);
+
+document.getElementById('steps').addEventListener('click', ()=>{
+  clearInterval(autoTimer);
+  autoTimer = setInterval(()=>{ cur=(cur+1)%SCENES.length; apply(); },10000);
+});
+</script>
+</body>
+</html>
